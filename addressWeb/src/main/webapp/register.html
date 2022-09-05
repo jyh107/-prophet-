@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <!--加入js，jQuery文件-->
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+</head>
+<body>
+ <form action="DuserServlet?action=register" method="post">
+   <table class="table container">
+       <tr>
+           <td align="right">用户名：</td>
+           <td><input type="text" size="30" id="userName" name="userName" placeholder="请输入用户名" onfocus="checkname()" onblur="checkname()"></td>
+           <td align="left"><div id="msg1" style="color: red;visibility: hidden">用户名不能为空</div></td>
+       </tr>
+       <tr>
+           <td align="right">密码：</td>
+           <td><input type="password" size="30" name="userPwd1"></td>
+           <td></td>
+       </tr>
+       <tr>
+           <td align="right">确认密码：</td>
+           <td><input type="password" size="30" name="userPwd2"></td>
+           <td></td>
+       </tr>
+       <tr>
+           <td align="right">邮箱：</td>
+           <td><input type="text" size="30" id="userEmail" name="email" placeholder="请输入邮箱地址" onfocus="checkmail()" onblur="checkmail()"></td>
+           <td><div id="msg4" style="color: red;visibility: hidden;">邮箱地址不正确</div></td>
+       </tr>
+       <tr>
+           <td colspan="3" align="center">
+               <input type="submit" class="btn btn-default" value="提交">
+               <input type="reset" class="btn btn-default" value="重置">
+           </td>
+       </tr>
+   </table>
+ </form>
+<script>
+    function checkname(){
+        //验证一下，焦点事件是否正确
+       // alert("哈哈")
+        if (document.getElementById("userName").value.length==0){
+            document.getElementById("msg1").style.visibility="visible";//显示
+        }else {
+            document.getElementById("msg1").style.visibility="hidden";//隐藏
+        }
+    }
+    function checkmail(){
+        //正则表达式
+        var re=/^\w+@[0-9a-z]+\.[a-z]+$/;
+        //:普通方式：var re=/表达式/附加参数
+        //:^表示匹配行首的文件(以谁开始)
+        //:\w匹配字母或数字或下划线
+        //:[]表示匹配其中的任一字符，相当于或的意思
+        //:$表示匹配行尾的文件
+        var mail=document.getElementById("userEmail");
+        if (re.test(mail.value)){
+            document.getElementById("msg4").style.visibility="hidden";
+        }else{
+            document.getElementById("msg4").style.visibility="visible";
+        }
+    }
+</script>
+</body>
+</html>

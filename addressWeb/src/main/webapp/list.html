@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <style type="text/css">
+        td,th{
+            text-align: center;
+        }
+    </style>
+    <script src="js/vuejs-2.5.16.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="jumbotron" align="center"><h3>显示所有的用户</h3></div>
+    <table border="1" class="table table-bordered table-hover">
+        <tr class="success">
+            <th>编号</th>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>邮箱</th>
+            <th>创建时间</th>
+            <th>最后更新时间</th>
+            <th>操作</th>
+        </tr>
+        <!--v-for绑定用户的集合-->
+        <tr v-for="(duser,index) in dusers">
+            <td v-text="index+1"></td>
+            <td v-text="duser.name"></td>
+            <td v-text="duser.pwd"></td>
+            <td v-text="duser.email"></td>
+            <td v-text="duser.d_create"></td>
+            <td v-text="duser.d_modified"></td>
+            <td><a class="btn btn-default btn-sm" :href="'update.html?id='+duser.pk_id">修改</a>
+                <a class="btn btn-default btn-sm" href="javascript:;" @click="deleteDuser(duser.name,duser.pk_id)">删除</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var vue = new Vue({
+       el:"#app",
+       data:{
+           dusers:[]
+       },
+        methods:{
+           findAll(){
+              //发送异步请求
+               axios.get("DuserServlet?action=findAll").then(response =>{
+                  //response.data就是响应体的内容(json)
+                   if (response.data.flag){
+                       //获取成功
+                       this.dusers=response.data.data;
+                   }else {
+                       alert(response.data.errorMsg);
+                       location.href="index.html";
+                   }
+               })
+           },
+            //删除联系人
+            deleteDuser(name,id){
+               if (confirm("您确定要删除"+name+"吗？")){
+                   //确定要删除
+                   axios.post("DuserServlet?action=delete&id="+id).then(response =>{
+                       if (response.data.flag){
+                           //删除成功
+                           location.href="list.html";
+                       }else {
+                           //删除失败
+                           alert(response.data.errorMsg);
+                       }
+                   })
+               }
+            }
+        },
+        //钩子函数
+        created(){
+           this.findAll()
+        }
+    });
+</script>
+</body>
+</html>

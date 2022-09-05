@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改信息</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/vuejs-2.5.16.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+    <script src="js/getParameter.js"></script>
+</head>
+<body>
+ <div id="app">
+     <form action="#" method="post" onsubmit="return false">
+         <table class="table container">
+             <tr>
+                 <td align="right">用户名：</td>
+                 <td><input type="text" src="50" id="userName" name="userName" v-model="duser.name" @focus="checkname(this)" @blur="checkname(this)"></td>
+                 <td><div id="msg1" style="color: red;visibility: hidden;">用户名不能为空</div></td>
+             </tr>
+             <tr>
+                 <td align="right">密码：</td>
+                 <td><input type="password" size="50" id="userpwd1"name="userpwd1" v-model="duser.pwd"></td>
+                 <td></td>
+             </tr>
+             <tr>
+                 <td align="right">确认密码：</td>
+                 <td><input type="password" size="50" id="userpwd2" name="userpwd2"></td>
+                 <td></td>
+             </tr>
+             <tr>
+                 <td align="right">邮箱：</td>
+                 <td><input type="text" size="50" id="mail" name="mail" v-model="duser.email"></td>
+                 <td></td>
+             </tr>
+             <tr>
+                 <td colspan="3" align="center">
+                     <div>
+                         <!--使用隐藏域绑定id-->
+                         <input type="hidden" name="id" v-model="duser.pk_id">
+                         <input class="btn btn-primary" type="submit" value="更新" @click="updateDuser()">
+                         <input class="btn btn-default" type="reset" value="重置">
+                     </div>
+                 </td>
+             </tr>
+         </table>
+     </form>
+ </div>
+<script>
+    var vue=new Vue({
+        el:"#app",
+        data:{
+            duser:{}
+        },
+        methods:{
+            findByid(){
+                //取id值
+                var id=getParameter("id");
+                //异步传输
+                axios.post("DuserServlet?action=findById&id="+id).then(response=>{
+                    if(response.data.flag){
+                        //获取成功，将获取的联系人信息给duser赋值
+                        this.duser=response.data.data
+                    }else {
+                        alert("获取联系人失败")
+                    }
+                })
+            },
+            updateDuser(){
+               //发送异步请求
+                axios.post("DuserServlet?action=update",this.duser).then(response=>{
+                    if (response.data.flag){
+                        //修改成功
+                        location.href="list.html"
+                    }else {
+                        alert(response.data.errorMsg)
+                    }
+                })
+            },
+            checkname(event){
+                if (event.userName.value.length==0){
+                    document.getElementById("msg1").style.visibility="visible";
+                }
+                else{
+                    document.getElementById("msg1").style.visibility="hidden";
+                }
+            }
+
+        },
+        created(){
+            this.findByid()
+        }
+    });
+</script>
+</body>
+</html>
